@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script language="javascript" type="text/javascript" src="p5.scribble.js"></script>
+    <script src="sketch.js"></script>
+
+
+    <title>東京ドーム何個分？</title>
+</head>
+
+<body>
+    <div class="container-sm">
+        <h1 class="display-5">「何個分？」計算機</h1>
+        <p class="lead">
+            「この面積って東京ドーム何個分なのかな？」を計算するページ。東京ドーム以外やカスタム選択機能もあるよ．出来上がった画像は「画像をダウンロード」ボタンを押して保存できるよ．
+        </p>
+
+
+        <div class="row">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="text" id="area" class="form-control is-invalid" style="text-align:right">
+                    <label for="floatingInput">面積を記入</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <select id="unit" class="form-select form-control-sm">
+                        <option value="1.0" selected>平米（㎡）</option>
+                        <option value="0.3025">坪</option>
+                        <option value="10000.0">ヘクタール(ha)</option>
+                    </select>
+                    <label for="floatingInput">単位を選択</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <select id="target" class="form-select">
+                        <option value="46755.0" selected>東京ドーム</option>
+                        <option value="510000">東京ディズニーランド</option>
+                        <option value="45900">サンリオピューロランド</option>
+                        <option value="583000">新宿御苑</option>
+                        <option value="122100">広島平和記念公園</option>
+                        <option value="450000">東京都立大学</option>
+                        <option value="-1">カスタム</option>
+                    </select>
+                    <label for="floatingInput">換算対象を選択</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="text" id="area_custom" value=1 class="form-control" style="text-align:right" disabled>
+                    <label for="floatingInput">カスタムを選択した場合に面積を記入</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <center>
+            <h1 class="display-1"><span id="result">--</span>
+        </center>
+        <div id="canvas">
+        </div>
+        <div class="row">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="text" id="name_input" class="form-control">
+                    <label for="floatingInput">入力した面積の名前</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="text" id="name_custom" class="form-control" disabled>
+                    <label for="floatingInput">換算対象がカスタム面積の名前
+                    </label>
+                </div>
+            </div>
+            <div class="col-md">
+                <button class="btn btn-outline-secondary" id="button_download">画像をダウンロード</button>
+
+            </div>
+        </div>
+        <hr>
+        <footer>Tetsuaki Baba &copy; 2021, github</footer>
+    </div>
+</body>
+
+</html>
