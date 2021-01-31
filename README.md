@@ -10,7 +10,7 @@
   * https://tetsuakibaba.github.io/HowManyHogeHogeAreThere
 
 ## Compatibility
-  * Only Chrome browser (MacOS, windows, linux)
+  * Any major browsers (chrome, safari, firefox)
 
 ## Author
 * Tetsuaki Baba: https://tetsuakibaba.jp
