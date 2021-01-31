@@ -1,10 +1,11 @@
 var canvas;
 let xoff = [];
 let yoff = [];
-
-var scribble = new Scribble();              // global mode
+let color_scheme = []; // 0: input, 1: target, 2: text, 3: background
+var scribble = new Scribble(); // global mode
 scribble.bowing = 1.0;
 scribble.roughness = 1.5;
+
 function setup() {
     let canvas_width = parseInt(document.getElementById('canvas').clientWidth);
     canvas = createCanvas(canvas_width, canvas_width * (9 / 16));
@@ -14,6 +15,10 @@ function setup() {
     select('#unit').changed(changedUnit);
     select('#target').changed(changedTarget);
     select('#area_custom').input(changedTarget);
+    select('#name_input').input(update);
+    select('#name_custom').input(update);
+    select('#color_scheme').changed(changedColorScheme);
+
     select('#button_download').mouseClicked(download);
     textAlign(CENTER, TOP);
     textSize(32);
@@ -23,11 +28,17 @@ function setup() {
     xoff[1] = random(1000);
     yoff[0] = random(1000);
     yoff[1] = random(1000);
+
+    document.getElementById('area_custom').value = document.getElementById('target').value;
+    var str = document.getElementById('color_scheme').value;
+    str = str.replace(/ /g, ''); // 空白の除去
+    color_scheme = str.split(',');
 }
 
 function download() {
     save('generated_image.png');
 }
+
 function windowResized() {
     let w = document.getElementById('canvas').clientWidth;
     resizeCanvas(w, w * (9 / 16));
@@ -35,7 +46,7 @@ function windowResized() {
 
 
 function draw() {
-    background(54, 47, 60);
+    background(color_scheme[3]);
     let area_input = parseFloat(document.getElementById('area').value);
     let area_target = parseFloat(document.getElementById('target').value);
     if (area_target < 0.0) {
@@ -63,32 +74,29 @@ function draw() {
             data_target.r = map(area_target, 0.0, area_target, 1.0, 0.8 * h);
             data_input.r = sqrt(area_input / area_target) * data_target.r;
 
-        }
-        else {
+        } else {
             data_input.r = map(area_input, 0.0, area_input, 1.0, 0.8 * h);
             data_target.r = sqrt(area_target / area_input) * data_input.r;
         }
 
-        //noStroke();
-        stroke(87, 177, 150);
+        // draw input area
+        stroke(color_scheme[0]);
         scribble.scribbleRect(data_input.x, data_input.y, data_input.r, data_input.r);
         scribble.scribbleFilling(
-            [data_input.x - data_input.r / 2, data_input.x + data_input.r / 2, data_input.x + data_input.r / 2, data_input.x - data_input.r / 2],
-            [data_input.y - data_input.r / 2, data_input.y - data_input.r / 2, data_input.y + data_input.r / 2, data_input.y + data_input.r / 2],
+            [data_input.x - data_input.r / 2, data_input.x + data_input.r / 2, data_input.x + data_input.r / 2, data_input.x - data_input.r / 2], [data_input.y - data_input.r / 2, data_input.y - data_input.r / 2, data_input.y + data_input.r / 2, data_input.y + data_input.r / 2],
             10.45, 300
         );
 
-        //noStroke();
-        stroke(255, 131, 123);
+        // draw target area
+        stroke(color_scheme[1]);
         scribble.scribbleRect(data_target.x, data_target.y, data_target.r, data_target.r);
         scribble.scribbleFilling(
-            [data_target.x - data_target.r / 2, data_target.x + data_target.r / 2, data_target.x + data_target.r / 2, data_target.x - data_target.r / 2],
-            [data_target.y - data_target.r / 2, data_target.y - data_target.r / 2, data_target.y + data_target.r / 2, data_target.y + data_target.r / 2],
+            [data_target.x - data_target.r / 2, data_target.x + data_target.r / 2, data_target.x + data_target.r / 2, data_target.x - data_target.r / 2], [data_target.y - data_target.r / 2, data_target.y - data_target.r / 2, data_target.y + data_target.r / 2, data_target.y + data_target.r / 2],
             10.45, 300
         );
 
         noStroke();
-        fill(232, 232, 231);
+        fill(color_scheme[2]);
         let label_input = document.getElementById('name_input').value;
         if (label_input == '') {
             label_input = "入力した面積";
@@ -104,8 +112,7 @@ function draw() {
                 label = "カスタムの面積";
             }
             text(label, data_target.x, data_target.y);
-        }
-        else {
+        } else {
             text(label_target, data_target.x, data_target.y);
         }
 
@@ -130,14 +137,37 @@ function update() {
         document.getElementById('area').classList.remove('is-invalid');
     }
 
+    console.log(area_target);
     // Custom入力の場合
     if (area_target < 0.0) {
         area_target = document.getElementById('area_custom').value;
         area_target = parseFloat(area_target.replace(/,/g, ''));
+    } else {
+        // 比較対象面積のDOMを更新
+        document.getElementById('area_custom').value = area_target;
     }
 
     let result = calcHowMany(area_input, area_target);
-    document.getElementById('result').innerHTML = result + "個分です";
+
+    // shows Display-1
+    document.getElementById('result').innerHTML = nfc(result, 0) + "個分です";
+
+    // shows lead text under the Display-1
+    let label = document.getElementById('target').options[document.getElementById('target').selectedIndex].text;
+    console.log(label);
+    if (label == "カスタム") {
+        label = document.getElementById('name_custom').value;
+        if (label == '') {
+            label = "カスタム面積";
+        }
+
+    }
+    let name_input = document.getElementById('name_input').value;
+    if (name_input == '') {
+        name_input = '入力された面積';
+    }
+    document.getElementById('result_detailed').innerHTML = "（" +
+        name_input + 'は' + label + result + "個分です）";
 }
 
 function calcHowMany(area_input, area_target) {
@@ -147,7 +177,7 @@ function calcHowMany(area_input, area_target) {
 
     //    console.log(area_input, area_target);
     // 東京ドーム何個分かを計算
-    let result = nfc(area_input / area_target, 4);
+    let result = area_input / area_target;
     return result;
 }
 
@@ -164,10 +194,15 @@ function changedTarget() {
     if (area_target < 0) {
         document.getElementById('area_custom').disabled = false;
         document.getElementById('name_custom').disabled = false;
-    }
-    else {
+    } else {
         document.getElementById('area_custom').disabled = true;
         document.getElementById('name_custom').disabled = true;
     }
     update();
+}
+
+function changedColorScheme() {
+    var str = document.getElementById('color_scheme').value;
+    str = str.replace(/ /g, ''); // 空白の除去
+    color_scheme = str.split(',');
 }
