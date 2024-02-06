@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
     <script language="javascript" type="text/javascript" src="p5.scribble.js"></script>
     <script src="sketch.js"></script>
@@ -20,30 +21,30 @@
 
 <body>
     <div class="container-sm">
-        <h1 class="display-5">「何個分？」計算機</h1>
+        <h1 class="display-5 mt-4 pt-4">「何個分？」計算機</h1>
         <p class="lead">
-            「この面積って東京ドーム何個分なのかな？」を計算するページ。東京ドーム以外やカスタム選択機能もあるよ．出来上がった画像は「画像をダウンロード」ボタンを押して保存できるよ．
+            「この面積って東京ドーム何個分なのかな？」を計算するページ。わかる人にはわかるけど、わからない人にはわからない、そんな計算をします。
         </p>
 
 
         <div class="row">
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
-                    <input type="text" id="area" class="form-control is-invalid" style="text-align:right">
+                    <input type="text" id="area" class="form-control is-invalid" value="46755" style="text-align:right">
                     <label for="floatingInput">面積を記入</label>
                 </div>
             </div>
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <select id="unit" class="form-select form-control-sm">
                         <option value="1.0" selected>平米（㎡）</option>
-                        <option value="0.3025">坪</option>
+                        <option value="3.30579">坪</option>
                         <option value="10000.0">ヘクタール(ha)</option>
                     </select>
                     <label for="floatingInput">単位を選択</label>
                 </div>
             </div>
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <select id="target" class="form-select">
                         <option value="46755.0" selected>東京ドーム</option>
@@ -55,13 +56,14 @@
                         <option value="450000">東京都立大学</option>
                         <option value="820">フットサルコート</option>
                         <option value="128000">イオンモール幕張新都心</option>
-                        <option value="33109">伊勢丹新宿点</option>
+                        <option value="33109">伊勢丹新宿店</option>
+                        <option value="1923">明治神宮武道場 至誠館 第二弓道場</option>
                         <option value="-1">カスタム</option>
                     </select>
                     <label for="floatingInput">換算対象を選択</label>
                 </div>
             </div>
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <input type="text" id="area_custom" value=1 class="form-control" style="text-align:right" disabled>
                     <label for="floatingInput">比較対象面積</label>
@@ -69,31 +71,33 @@
             </div>
         </div>
         <hr>
-        <center>
-            <h1 class="display-1">
+
+        <div id="download_image">
+            <h1 class="display-1 text-center">
                 <span id="result">--</span>
             </h1>
-            <p class="lead">
+            <p class="lead text-center">
                 <span id="result_detailed">--</span>
             </p>
-        </center>
-        <div id="canvas">
+
+            <div id="canvas">
+            </div>
         </div>
         <div class="row">
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <input type="text" id="name_input" class="form-control">
                     <label for="floatingInput">入力面積の名前</label>
                 </div>
             </div>
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <input type="text" id="name_custom" class="form-control" disabled>
                     <label for="floatingInput">カスタム面積の名前
                     </label>
                 </div>
             </div>
-            <div class="col-md">
+            <div class="col-md mt-1">
                 <div class="form-floating">
                     <select id="color_scheme" class="form-select">
                         <option value="#57B196, #FF837B, #E8E8E7, #362F3C" selected>default</option>
@@ -104,13 +108,13 @@
                     <label for="floatingInput">Color Scheme</label>
                 </div>
             </div>
-            <div class="col-md">
-                <button class="btn btn-outline-secondary" id="button_download">画像をダウンロード</button>
+            <div class="col-md mt-1">
+                <button class="btn btn-outline-secondary" onclick="downloadImage();">画像をダウンロード</button>
 
             </div>
         </div>
         <hr>
-        <footer>Tetsuaki Baba &copy; 2021,
+        <footer class="text-center small text-muted mb-4">Tetsuaki Baba &copy; 2024,
             <a href="https://github.com/TetsuakiBaba/HowManyHogeHogeAreThere" target="_blannk">github</a>
         </footer>
     </div>

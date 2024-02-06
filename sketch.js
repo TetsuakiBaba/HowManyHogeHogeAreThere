@@ -19,9 +19,8 @@ function setup() {
     select('#name_custom').input(update);
     select('#color_scheme').changed(changedColorScheme);
 
-    select('#button_download').mouseClicked(download);
     textAlign(CENTER, TOP);
-    textSize(32);
+    textSize(width / 40);
     frameRate(3);
 
     xoff[0] = random(1000);
@@ -33,6 +32,8 @@ function setup() {
     var str = document.getElementById('color_scheme').value;
     str = str.replace(/ /g, ''); // 空白の除去
     color_scheme = str.split(',');
+
+    update();
 }
 
 function download() {
@@ -44,11 +45,25 @@ function windowResized() {
     resizeCanvas(w, w * (9 / 16));
 }
 
+function downloadImage() {
+    html2canvas(document.querySelector("#download_image")).then(canvas => {
+        var link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'captured_image.png';
+        link.click();
+    });
+    // html2canvas(document.getElementById('download_image')).then(function (canvas) {
+
+    // });
+}
+
+
 
 function draw() {
     background(color_scheme[3]);
     let area_input = parseFloat(document.getElementById('area').value);
     let area_target = parseFloat(document.getElementById('target').value);
+    area_input = area_input * parseFloat(document.getElementById('unit').value);
     if (area_target < 0.0) {
         area_target = parseFloat(document.getElementById('area_custom').value);
     }
@@ -206,3 +221,4 @@ function changedColorScheme() {
     str = str.replace(/ /g, ''); // 空白の除去
     color_scheme = str.split(',');
 }
+
